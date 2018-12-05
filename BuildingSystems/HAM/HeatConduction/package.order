@@ -1,6 +1,8 @@
 HeatConduction1D
 HeatConduction1DNodes
+HeatConduction1DNodesVariable
 HeatConduction3D
 MultiLayerHeatConduction1DNodes
+MultiLayerHeatConduction1DNodesVariable
 Examples
 BaseClasses
