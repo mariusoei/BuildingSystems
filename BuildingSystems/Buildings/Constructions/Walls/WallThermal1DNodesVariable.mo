@@ -44,7 +44,8 @@ model WallThermal1DNodesVariable
       iconTransformation(extent={{20,10},{40,30}})));
 
   Modelica.Blocks.Interfaces.RealInput conductionMultiplier
-    annotation (Placement(transformation(extent={{-60,-44},{-40,-24}})));
+    annotation (Placement(transformation(extent={{-40,-46},{-20,-26}}),
+        iconTransformation(extent={{-40,-46},{-20,-26}})));
 
 
 equation
@@ -70,7 +71,7 @@ equation
       smooth=Smooth.None));
 
   connect(conductionMultiplier, construction.conductionMultiplier) annotation (
-     Line(points={{-50,-34},{-30,-34},{-30,-4.7},{-8.3,-4.7}}, color={0,0,127}));
+     Line(points={{-30,-36},{-12,-36},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
 
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
     Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
