@@ -5,13 +5,13 @@ partial model BuildingTemplate
 
   parameter Integer nZones = 0
     "Number of thermal zones of the building"
-    annotation(Evaluate=true, Dialog(connectorSizing=true, tab="General",group="Ports"));
+    annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
   parameter Integer nHeatSources = 0
     "Number of heat sources of the building"
-    annotation(Evaluate=true, Dialog(connectorSizing=true, tab="General",group="Ports"));
+    annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
   parameter Integer nMoistureSources = 0
     "Number of moisture sources of the building"
-    annotation(Evaluate=true, Dialog(connectorSizing=true, tab="General",group="Ports"));
+    annotation(Evaluate=true, Dialog(tab="General",group="Ports"));
   final parameter Integer nSurfacesAmbient = surfacesToAmbient.nSurfaces
     "Number of surfaces (with air contact) to the building ambient"
     annotation(Dialog(tab = "Advanced", group = "3D discretisation"), HideResult=true);
