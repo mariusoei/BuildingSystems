@@ -1,7 +1,26 @@
 within BuildingSystems.Buildings.Constructions.Walls;
 model WallThermal1DNodesVariable
   "Thermal wall model with 1D discritisation of the single layers"
-  extends BuildingSystems.Buildings.BaseClasses.WallThermalGeneral;
+  extends BuildingSystems.Buildings.BaseClasses.WallThermalGeneral(
+  toSurfacePort_1(epsilon=epsilon_1_internal),
+  toSurfacePort_2(epsilon=epsilon_2_internal));
+
+
+  parameter Boolean hasVariableEmissivity_1 = false
+    "Get emissivity epsilon for surface 1 from input"
+    annotation(Dialog(tab = "General", group = "Surfaces"));
+
+  parameter Boolean hasVariableEmissivity_2 = false
+    "Get emissivity epsilon for surface 2 from input"
+    annotation(Dialog(tab = "General", group = "Surfaces"));
+
+  Modelica.Blocks.Interfaces.RealInput epsilon_1_in(start=epsilon_1) if hasVariableEmissivity_1
+    annotation (Placement(transformation(extent={{-40,-68},{-20,-48}}),
+        iconTransformation(extent={{-40,-68},{-20,-48}})));
+
+  Modelica.Blocks.Interfaces.RealInput epsilon_2_in(start=epsilon_2) if hasVariableEmissivity_2
+    annotation (Placement(transformation(extent={{40,-68},{20,-48}}),
+        iconTransformation(extent={{40,-68},{20,-48}})));
 
   BuildingSystems.Interfaces.HeatPort heatPort_source if heatSource
     annotation (Placement(transformation(extent={{10,-48},{30,-28}}),
@@ -44,11 +63,30 @@ model WallThermal1DNodesVariable
       iconTransformation(extent={{20,10},{40,30}})));
 
   Modelica.Blocks.Interfaces.RealInput conductionMultiplier
-    annotation (Placement(transformation(extent={{-40,-46},{-20,-26}}),
-        iconTransformation(extent={{-40,-46},{-20,-26}})));
+    annotation (Placement(transformation(extent={{-40,-86},{-20,-66}}),
+        iconTransformation(extent={{-10,-10},{10,10}},
+        rotation=90,
+        origin={0,-82})));
 
+protected
+  Modelica.Blocks.Interfaces.RealInput epsilon_1_internal;
+  Modelica.Blocks.Interfaces.RealInput epsilon_2_internal;
 
 equation
+
+  // Connect emissivity either to input or to parameter, depending on boolean
+  if hasVariableEmissivity_1 then
+    connect(epsilon_1_in,epsilon_1_internal);
+  else
+    epsilon_1_internal = epsilon_1;
+  end if;
+
+  if hasVariableEmissivity_2 then
+    connect(epsilon_2_in,epsilon_2_internal);
+  else
+    epsilon_2_internal = epsilon_2;
+  end if;
+
   connect(heatPort_source, construction.heatPort_source);
   connect(toSurfacePort_1.moisturePort, moistBcPort1.moisturePort) annotation (Line(
     points={{-20,0},{-20,-11.2}},
@@ -71,7 +109,7 @@ equation
       smooth=Smooth.None));
 
   connect(conductionMultiplier, construction.conductionMultiplier) annotation (
-     Line(points={{-30,-36},{-12,-36},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
+     Line(points={{-30,-76},{-12,-76},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
 
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
     Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
