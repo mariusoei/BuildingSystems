@@ -14,17 +14,36 @@ model WallThermal1DNodesVariable
     "Get emissivity epsilon for surface 2 from input"
     annotation(Dialog(tab = "General", group = "Surfaces"));
 
+  parameter Boolean hasVariableAbsorptance_1 = false
+    "Get absorptance abs for surface 1 from input"
+    annotation(Dialog(tab = "General", group = "Surfaces"));
+
+  parameter Boolean hasVariableAbsorptance_2 = false
+    "Get absorptance abs for surface 2 from input"
+    annotation(Dialog(tab = "General", group = "Surfaces"));
+
+    // Variable longwave emissivity inputs
   Modelica.Blocks.Interfaces.RealInput epsilon_1_in(start=epsilon_1) if hasVariableEmissivity_1
-    annotation (Placement(transformation(extent={{-40,-68},{-20,-48}}),
-        iconTransformation(extent={{-40,-68},{-20,-48}})));
+    annotation (Placement(transformation(extent={{-40,-62},{-20,-42}}),
+        iconTransformation(extent={{-40,-62},{-20,-42}})));
 
   Modelica.Blocks.Interfaces.RealInput epsilon_2_in(start=epsilon_2) if hasVariableEmissivity_2
-    annotation (Placement(transformation(extent={{40,-68},{20,-48}}),
-        iconTransformation(extent={{40,-68},{20,-48}})));
+    annotation (Placement(transformation(extent={{40,-62},{20,-42}}),
+        iconTransformation(extent={{40,-62},{20,-42}})));
+
+  // Variable shortwave absorptance inputs
+  Modelica.Blocks.Interfaces.RealInput abs_1_in(start=abs_1) if hasVariableAbsorptance_1
+    annotation (Placement(transformation(extent={{-40,-80},{-20,-60}}),
+        iconTransformation(extent={{-40,-80},{-20,-60}})));
+
+  Modelica.Blocks.Interfaces.RealInput abs_2_in(start=abs_2) if hasVariableAbsorptance_2
+    annotation (Placement(transformation(extent={{40,-80},{20,-60}}),
+        iconTransformation(extent={{40,-80},{20,-60}})));
+
 
   BuildingSystems.Interfaces.HeatPort heatPort_source if heatSource
-    annotation (Placement(transformation(extent={{10,-48},{30,-28}}),
-      iconTransformation(extent={{10,-48},{30,-28}})));
+    annotation (Placement(transformation(extent={{10,-40},{30,-20}}),
+      iconTransformation(extent={{10,-40},{30,-20}})));
 
   BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodesVariable construction(
     lengthY=width,
@@ -63,7 +82,7 @@ model WallThermal1DNodesVariable
       iconTransformation(extent={{20,10},{40,30}})));
 
   Modelica.Blocks.Interfaces.RealInput conductionMultiplier
-    annotation (Placement(transformation(extent={{-40,-86},{-20,-66}}),
+    annotation (Placement(transformation(extent={{-40,-104},{-20,-84}}),
         iconTransformation(extent={{-10,-10},{10,10}},
         rotation=90,
         origin={0,-82})));
@@ -71,6 +90,8 @@ model WallThermal1DNodesVariable
 protected
   Modelica.Blocks.Interfaces.RealInput epsilon_1_internal;
   Modelica.Blocks.Interfaces.RealInput epsilon_2_internal;
+  Modelica.Blocks.Interfaces.RealInput abs_1_internal;
+  Modelica.Blocks.Interfaces.RealInput abs_2_internal;
 
 equation
 
@@ -85,6 +106,19 @@ equation
     connect(epsilon_2_in,epsilon_2_internal);
   else
     epsilon_2_internal = epsilon_2;
+  end if;
+
+  // Connect sw absorptance either to input or to parameter, depending on boolean
+  if hasVariableAbsorptance_1 then
+    connect(abs_1_in,abs_1_internal);
+  else
+    abs_1_internal = abs_1;
+  end if;
+
+  if hasVariableAbsorptance_2 then
+    connect(abs_2_in,abs_2_internal);
+  else
+    abs_2_internal = abs_2;
   end if;
 
   connect(heatPort_source, construction.heatPort_source);
@@ -109,7 +143,7 @@ equation
       smooth=Smooth.None));
 
   connect(conductionMultiplier, construction.conductionMultiplier) annotation (
-     Line(points={{-30,-76},{-12,-76},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
+     Line(points={{-30,-94},{-12,-94},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
 
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
     Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
