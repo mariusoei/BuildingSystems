@@ -15,9 +15,6 @@ model HeatConduction1DNodesVariable
     "Optional heat source at the numerical node"
     annotation(Placement(transformation(extent={{-10,-12},{10,8}}), iconTransformation(extent={{-10,-12},{10,8}})));
 
-  parameter Boolean hasVariableConduction=false
-    "=true if this element has variable heat conduction";
-
   Modelica.Blocks.Interfaces.RealInput conductionMultiplier
     "Input for heat transfer coefficient" annotation (Placement(transformation(
           extent={{-94,-58},{-74,-38}}), iconTransformation(extent={{-94,-58},{-74,
@@ -43,9 +40,6 @@ protected
     each fixed = false)
     "Heat capacity of the numerical node";
 
-  Modelica.Blocks.Interfaces.RealInput heatConCoeff_int
-    "Internal variable, equals heat conduction coefficient";
-
 initial algorithm
   for i in 1:nNodesX loop
     dx[i]:= lengthX / nNodesX;
@@ -63,29 +57,22 @@ initial algorithm
 
 equation
 
-  if hasVariableConduction then
-    connect(conductionMultiplier, heatConCoeff_int);
-  else
-    heatConCoeff_int = 1.0;
-  end if;
-
-
   heatPort_source[1].T = T[1];
   // Heat flux side 1
-  heatPort_x1.Q_flow = heatConCoeff_int*CTh[1] * (heatPort_x1.T - T[1]);
+  heatPort_x1.Q_flow = conductionMultiplier*CTh[1] * (heatPort_x1.T - T[1]);
   // Heat flux side 2
-  heatPort_x2.Q_flow = heatConCoeff_int*CTh[nNodesX+1] * (heatPort_x2.T - T[nNodesX]);
+  heatPort_x2.Q_flow = conductionMultiplier*CTh[nNodesX+1] * (heatPort_x2.T - T[nNodesX]);
   if nNodesX > 1 then
     // First node side 1
-    C[1] * der(T[1]) = heatPort_x1.Q_flow + heatConCoeff_int*CTh[2] * (T[2] - T[1]) + heatPort_source[1].Q_flow;
+    C[1] * der(T[1]) = heatPort_x1.Q_flow + conductionMultiplier*CTh[2] * (T[2] - T[1]) + heatPort_source[1].Q_flow;
     // Mean nodes
     for i in 2:nNodesX-1 loop
       heatPort_source[i].T = T[i];
-      C[i] * der(T[i]) = heatConCoeff_int*CTh[i] * T[i-1] - heatConCoeff_int*(CTh[i] + CTh[i+1]) * T[i] + heatConCoeff_int*CTh[i+1] * T[i+1] + heatPort_source[i].Q_flow;
+      C[i] * der(T[i]) = conductionMultiplier*CTh[i] * T[i-1] - conductionMultiplier*(CTh[i] + CTh[i+1]) * T[i] + conductionMultiplier*CTh[i+1] * T[i+1] + heatPort_source[i].Q_flow;
     end for;
     // last node side 2
     heatPort_source[nNodesX].T = T[nNodesX];
-    C[nNodesX] * der(T[nNodesX]) = heatConCoeff_int * CTh[nNodesX] * (T[nNodesX-1] - T[nNodesX]) + heatPort_x2.Q_flow + heatPort_source[nNodesX].Q_flow;
+    C[nNodesX] * der(T[nNodesX]) = conductionMultiplier * CTh[nNodesX] * (T[nNodesX-1] - T[nNodesX]) + heatPort_x2.Q_flow + heatPort_source[nNodesX].Q_flow;
   else
     // body with only one node
     C[1] * der(T[1]) = heatPort_x1.Q_flow + heatPort_x2.Q_flow + heatPort_source[1].Q_flow;

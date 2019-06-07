@@ -55,6 +55,7 @@ model WallThermal1DNodesVariable
     T_start=T_start,
     layerWithHeatSource=layerWithHeatSource,
     nodeWithHeatSource=nodeWithHeatSource,
+    hasVariableConduction=hasVariableConduction,
     layerWithVariableConduction=layerWithVariableConduction)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
@@ -94,7 +95,6 @@ protected
   Modelica.Blocks.Interfaces.RealInput epsilon_2_internal;
   Modelica.Blocks.Interfaces.RealInput abs_1_internal;
   Modelica.Blocks.Interfaces.RealInput abs_2_internal;
-  Modelica.Blocks.Interfaces.RealInput conductionMultiplier_internal;
 
 equation
 
@@ -124,13 +124,6 @@ equation
     abs_2_internal = abs_2;
   end if;
 
-  // Connect variable conduction to either input or constant
-  if hasVariableConduction then
-    connect(conductionMultiplier, conductionMultiplier_internal);
-  else
-    conductionMultiplier_internal = 1.0;
-  end if;
-
   connect(heatPort_source, construction.heatPort_source);
   connect(toSurfacePort_1.moisturePort, moistBcPort1.moisturePort) annotation (Line(
     points={{-20,0},{-20,-11.2}},
@@ -152,7 +145,7 @@ equation
       pattern=LinePattern.Solid,
       smooth=Smooth.None));
 
-  connect(conductionMultiplier_internal, construction.conductionMultiplier) annotation (
+  connect(conductionMultiplier, construction.conductionMultiplier) annotation (
      Line(points={{-30,-94},{-12,-94},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
 
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={

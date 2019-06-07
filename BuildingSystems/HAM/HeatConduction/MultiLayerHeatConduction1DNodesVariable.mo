@@ -8,8 +8,7 @@ model MultiLayerHeatConduction1DNodesVariable
     each lengthZ=lengthZ,
     lengthX=thickness,
     nNodesX=nNodes,
-    T_start=T_start,
-    hasVariableConduction={(i==layerWithVariableConduction) for i in 1:nLayers})
+    T_start=T_start)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
 
   BuildingSystems.Interfaces.HeatPort heatPort_x1
@@ -33,6 +32,8 @@ model MultiLayerHeatConduction1DNodesVariable
 
 
   // Settings for variable heat conduction
+  parameter Boolean hasVariableConduction = true
+    "=true if a layer has variable conduction coefficient.";
   parameter Integer layerWithVariableConduction = 1
     "Material layer with variable heat conduction";
 
@@ -53,7 +54,7 @@ model MultiLayerHeatConduction1DNodesVariable
     "Material layer with internal heat source";
   parameter Integer nodeWithHeatSource = 1
     "Numerical node of the specified layer with internal heat source";
-  Modelica.Blocks.Interfaces.RealInput conductionMultiplier
+  Modelica.Blocks.Interfaces.RealInput conductionMultiplier if hasVariableConduction
     annotation (Placement(transformation(extent={{-96,-60},{-70,-34}})));
 equation
   connect(heatPort_source,layer[layerWithHeatSource].heatPort_source[nodeWithHeatSource])
@@ -66,10 +67,16 @@ equation
   connect(heatPort_x2,layer[nLayers].heatPort_x2)
     annotation (Line(points={{80,0},{8,0}}, color={191,0,0}));
 
-  connect(conductionMultiplier, layer[layerWithVariableConduction].conductionMultiplier)
-    annotation (Line(points={{-83,-47},{-45.5,-47},{-45.5,-4.8},{-8.4,-4.8}},
+  for i in 1:nLayers loop
+    if i==layerWithVariableConduction then
+      connect(conductionMultiplier, layer[i].conductionMultiplier)
+        annotation (Line(points={{-83,-47},{-45.5,-47},{-45.5,-4.8},{-8.4,-4.8}},
         color={0,0,127}));
-
+    else
+      layer[i].conductionMultiplier = 1.0;
+    end if;
+  end for;
+  
   annotation(defaultComponentName = "layeredEle",Icon(graphics={
     Rectangle(extent={{-80,80},{-40,-80}},lineColor={255,170,85},fillColor={255,170,85},
             fillPattern =                                                                           FillPattern.Solid),
