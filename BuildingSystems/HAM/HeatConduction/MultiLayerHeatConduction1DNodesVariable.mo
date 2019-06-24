@@ -68,7 +68,7 @@ equation
     annotation (Line(points={{80,0},{8,0}}, color={191,0,0}));
 
   for i in 1:nLayers loop
-    if i==layerWithVariableConduction then
+    if hasVariableConduction and (i==layerWithVariableConduction) then
       connect(conductionMultiplier, layer[i].conductionMultiplier)
         annotation (Line(points={{-83,-47},{-45.5,-47},{-45.5,-4.8},{-8.4,-4.8}},
         color={0,0,127}));
@@ -76,7 +76,7 @@ equation
       layer[i].conductionMultiplier = 1.0;
     end if;
   end for;
-  
+
   annotation(defaultComponentName = "layeredEle",Icon(graphics={
     Rectangle(extent={{-80,80},{-40,-80}},lineColor={255,170,85},fillColor={255,170,85},
             fillPattern =                                                                           FillPattern.Solid),
