@@ -41,19 +41,20 @@ model WallThermal1DNodes
     "Assign thermal mass to surface 1 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.HeatCapacity heatCapacity_surface_1 = 1
-    "Heat capacity of surface if surfaceHasMass_1"
+  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.01
+    "Thickness of surface layer if surfaceHasMass_1"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
   parameter Boolean surfaceHasMass_2 = false
     "Assign thermal mass to surface 2 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.HeatCapacity heatCapacity_surface_2 = 1
-    "Heat capacity of surface if surfaceHasMass_2"
+  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.01
+    "Thickness of surface layer if surfaceHasMass_2"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1 if
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(
+    T(start=T_start[1]), C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1) if
     surfaceHasMass_1
     annotation (Placement(transformation(extent={{-22,58},{-2,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_1(m=2) if
@@ -61,14 +62,33 @@ model WallThermal1DNodes
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={-12,42})));
-  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2 if
-    surfaceHasMass_1
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(
+    T(start=T_start[end]), C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2) if
+    surfaceHasMass_2
     annotation (Placement(transformation(extent={{4,58},{24,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_2(m=2) if
-       surfaceHasMass_1 annotation (Placement(transformation(
+       surfaceHasMass_2 annotation (Placement(transformation(
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={14,42})));
+
+protected
+  parameter Modelica.SIunits.SpecificHeatCapacity specHeatCapacity_surface_1 = constructionData.material[1].c
+    "Heat capacity of surface if surfaceHasMass_1"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Density rho_surface_1 = constructionData.material[1].rho
+    "Density of surface if surfaceHasMass_1"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.SpecificHeatCapacity specHeatCapacity_surface_2 = constructionData.material[end].c
+    "Heat capacity of surface if surfaceHasMass_2"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Density rho_surface_2 = constructionData.material[end].rho
+    "Density of surface if surfaceHasMass_2"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
 equation
   connect(heatPort_source, construction.heatPort_source);
   connect(toSurfacePort_1.moisturePort, moistBcPort1.moisturePort) annotation (Line(
@@ -115,8 +135,10 @@ equation
     annotation (Line(points={{14,52},{14,58}},   color={191,0,0}));
 
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
-    Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},fillPattern = FillPattern.Solid,textString = "1D"),
-    Text(extent={{-66,146},{66,106}},lineColor={0,0,255},fillColor={230,230,230},fillPattern = FillPattern.Solid,textString = "%name")}),
+    Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
+            fillPattern =                                                                                     FillPattern.Solid,textString = "1D"),
+    Text(extent={{-66,146},{66,106}},lineColor={0,0,255},fillColor={230,230,230},
+            fillPattern =                                                                      FillPattern.Solid,textString = "%name")}),
 Documentation(info="<html>
 <p>
 This is a thermal wall model with 1D discritisation of the single layers.

@@ -90,11 +90,62 @@ model WallThermal1DNodesVariable
         rotation=90,
         origin={0,-82})));
 
+  parameter Boolean surfaceHasMass_1 = false
+    "Assign thermal mass to surface 1 (for numerical purposes)"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.01
+    "Thickness of surface layer if surfaceHasMass_1"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Boolean surfaceHasMass_2 = false
+    "Assign thermal mass to surface 2 (for numerical purposes)"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.01
+    "Thickness of surface layer if surfaceHasMass_2"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(T(start=
+          T_start[1]), C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1) if
+    surfaceHasMass_1
+    annotation (Placement(transformation(extent={{-22,58},{-2,78}})));
+  Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_1(m=2) if
+       surfaceHasMass_1 annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={-12,42})));
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(T(start=
+          T_start[end]), C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2) if
+    surfaceHasMass_2
+    annotation (Placement(transformation(extent={{4,58},{24,78}})));
+  Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_2(m=2) if
+       surfaceHasMass_2 annotation (Placement(transformation(
+        extent={{-10,-10},{10,10}},
+        rotation=180,
+        origin={14,42})));
 protected
   Modelica.Blocks.Interfaces.RealInput epsilon_1_internal;
   Modelica.Blocks.Interfaces.RealInput epsilon_2_internal;
   Modelica.Blocks.Interfaces.RealInput abs_1_internal;
   Modelica.Blocks.Interfaces.RealInput abs_2_internal;
+
+  parameter Modelica.SIunits.SpecificHeatCapacity specHeatCapacity_surface_1 = constructionData.material[1].c
+    "Heat capacity of surface if surfaceHasMass_1"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Density rho_surface_1 = constructionData.material[1].rho
+    "Density of surface if surfaceHasMass_1"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.SpecificHeatCapacity specHeatCapacity_surface_2 = constructionData.material[end].c
+    "Heat capacity of surface if surfaceHasMass_2"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+  parameter Modelica.SIunits.Density rho_surface_2 = constructionData.material[end].rho
+    "Density of surface if surfaceHasMass_2"
+    annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
 equation
 
@@ -135,19 +186,41 @@ equation
       color={0,0,0},
       pattern=LinePattern.Solid,
       smooth=Smooth.None));
-  connect(construction.heatPort_x2, toSurfacePort_2.heatPort) annotation (Line(
-      points={{8,0},{20,0}},
-      color={191,0,0},
-      smooth=Smooth.None));
-  connect(toSurfacePort_1.heatPort, construction.heatPort_x1) annotation (Line(
-      points={{-20,0},{-8,0}},
-      color={0,0,0},
-      pattern=LinePattern.Solid,
-      smooth=Smooth.None));
+
 
   connect(conductionMultiplier, construction.conductionMultiplier) annotation (
      Line(points={{-30,-94},{-12,-94},{-12,-4.7},{-8.3,-4.7}}, color={0,0,127}));
 
+
+  if surfaceHasMass_1 then
+    connect(toSurfacePort_1.heatPort, thermalCollector_1.port_a[1])
+      annotation (Line(points={{-20,0},{-12,0},{-12,31.5}}, color={0,0,0}));
+    connect(thermalCollector_1.port_a[2], construction.heatPort_x1)
+      annotation (Line(points={{-12,32.5},{-12,0},{-8,0}}, color={191,0,0}));
+  else
+    connect(toSurfacePort_1.heatPort, construction.heatPort_x1) annotation (Line(
+        points={{-20,0},{-8,0}},
+        color={0,0,0},
+        pattern=LinePattern.Solid,
+        smooth=Smooth.None));
+  end if;
+
+  if surfaceHasMass_2 then
+    connect(toSurfacePort_2.heatPort, thermalCollector_2.port_a[1])
+      annotation (Line(points={{20,0},{14,0},{14,31.5}}, color={0,0,0}));
+    connect(thermalCollector_2.port_a[2], construction.heatPort_x2)
+      annotation (Line(points={{14,32.5},{14,0},{8,0}}, color={191,0,0}));
+  else
+    connect(construction.heatPort_x2, toSurfacePort_2.heatPort) annotation (Line(
+      points={{8,0},{20,0}},
+      color={191,0,0},
+      smooth=Smooth.None));
+  end if;
+
+  connect(thermalCollector_1.port_b,thermalMass_surface_1. port)
+    annotation (Line(points={{-12,52},{-12,58}}, color={191,0,0}));
+  connect(thermalCollector_2.port_b,thermalMass_surface_2. port)
+    annotation (Line(points={{14,52},{14,58}},   color={191,0,0}));
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
     Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
             fillPattern =                                                                                     FillPattern.Solid,textString = "1D"),
