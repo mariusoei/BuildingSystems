@@ -2,8 +2,8 @@ within BuildingSystems.Buildings.Constructions.Walls;
 model WallThermal1DNodesVariable
   "Thermal variable wall model with 1D discritisation of the single layers"
   extends BuildingSystems.Buildings.BaseClasses.WallThermalGeneral(
-  toSurfacePort_1(epsilon=epsilon_1_internal),
-  toSurfacePort_2(epsilon=epsilon_2_internal));
+  toSurfacePort_1(epsilon=epsilon_1_internal,abs=abs_1_internal),
+  toSurfacePort_2(epsilon=epsilon_2_internal,abs=abs_2_internal));
 
 
   parameter Boolean hasVariableEmissivity_1 = false
