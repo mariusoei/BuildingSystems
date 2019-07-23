@@ -94,7 +94,7 @@ model WallThermal1DNodesVariable
     "Assign thermal mass to surface 1 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.01
+  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.005
     "Thickness of surface layer if surfaceHasMass_1"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
@@ -102,13 +102,14 @@ model WallThermal1DNodesVariable
     "Assign thermal mass to surface 2 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.01
+  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.005
     "Thickness of surface layer if surfaceHasMass_2"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
 
-  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(T(start=
-          T_start[1]), C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1) if
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(
+                       C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1, T(start=
+          T_start[1], fixed=true)) if
     surfaceHasMass_1
     annotation (Placement(transformation(extent={{-22,58},{-2,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_1(m=2) if
@@ -116,8 +117,9 @@ model WallThermal1DNodesVariable
         extent={{-10,-10},{10,10}},
         rotation=180,
         origin={-12,42})));
-  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(T(start=
-          T_start[end]), C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2) if
+  Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(
+                         C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2, T(start=
+          T_start[end], fixed=true)) if
     surfaceHasMass_2
     annotation (Placement(transformation(extent={{4,58},{24,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_2(m=2) if

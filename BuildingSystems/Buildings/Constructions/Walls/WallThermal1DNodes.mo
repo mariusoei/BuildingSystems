@@ -41,7 +41,7 @@ model WallThermal1DNodes
     "Assign thermal mass to surface 1 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.01
+  parameter Modelica.SIunits.Thickness thickness_surface_1 = 0.005
     "Thickness of surface layer if surfaceHasMass_1"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
@@ -49,7 +49,7 @@ model WallThermal1DNodes
     "Assign thermal mass to surface 2 (for numerical purposes)"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
-  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.01
+  parameter Modelica.SIunits.Thickness thickness_surface_2 = 0.005
     "Thickness of surface layer if surfaceHasMass_2"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
