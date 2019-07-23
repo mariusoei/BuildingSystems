@@ -50,7 +50,7 @@ model WallThermal1DNodesVariable
     lengthZ=height,
     nLayers=constructionData.nLayers,
     nNodes=nNodes,
-    thickness=constructionData.thickness,
+    thickness=thickness,
     material=constructionData.material,
     T_start=T_start,
     layerWithHeatSource=layerWithHeatSource,
@@ -106,6 +106,9 @@ model WallThermal1DNodesVariable
     "Thickness of surface layer if surfaceHasMass_2"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
 
+  parameter Modelica.SIunits.Thickness thickness[constructionData.nLayers](each fixed=false)
+    "Thickness of the construction layers";
+
 
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(
                        C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1, T(start=
@@ -148,6 +151,16 @@ protected
   parameter Modelica.SIunits.Density rho_surface_2 = constructionData.material[end].rho
     "Density of surface if surfaceHasMass_2"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
+
+initial algorithm
+  // Adjust surface layer thickness if surface has attached mass
+  thickness := constructionData.thickness;
+  if surfaceHasMass_1 then
+    thickness[1] := thickness[1] - thickness_surface_1;
+  end if;
+  if surfaceHasMass_2 then
+    thickness[end] := thickness[end] - thickness_surface_2;
+  end if;
 
 equation
 
