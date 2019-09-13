@@ -8,8 +8,13 @@ package Types
     Input "Use input connector")
     "Enumeration to select data source";
 
+  type GeometryType = enumeration(
+    Fixed "Fixed",
+    Flexible "Flexible")
+    "Enumeration to select the geometry type";
+
   type ThermalBoundaryCondition = enumeration(
-    Ambient "Ambient climate",
+    Ambience "Ambience climate",
     Adiabatic "Adiabatic boundary condition",
     Constant "Constant temperature")
     "Enumeration of thermal boundary conditions";

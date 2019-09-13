@@ -31,22 +31,22 @@ partial model SolarRadiationTransformerGeneral
     "Solar total radiation of tilted surface";
   input BuildingSystems.Interfaces.Angle_degInput angleDegAzi
     "Azimuth angle of the surface"
-    annotation (Placement(transformation(extent={{-102,-80},{-62,-40}}),iconTransformation(extent={{-90,-74},{-62,-46}})));
+    annotation (Placement(transformation(extent={{-102,-80},{-62,-40}}),
+      iconTransformation(extent={{-90,-74},{-62,-46}})));
   input BuildingSystems.Interfaces.Angle_degInput angleDegTil if not OneAxisTracking
     "Tilt angle of the surface"
-    annotation (Placement(transformation(extent={{-102,-46},{-62,-6}}), iconTransformation(extent={{-90,-34},{-62,-6}})));
-  BuildingSystems.Interfaces.Angle_degOutput angleDegTil_internal
-    "Tilt angle of the surface";
+    annotation (Placement(transformation(extent={{-102,-46},{-62,-6}}),
+      iconTransformation(extent={{-90,-34},{-62,-6}})));
   output BuildingSystems.Interfaces.Angle_degOutput angleDegTilTracked =
-    180.0 / Modelica.Constants.pi * atan(-sin((angleDegAziSun + angleDegAzi - 90.0)*Modelica.Constants.pi/180.0) * tan(angleZen)) if OneAxisTracking
+    180.0 / Modelica.Constants.pi * atan(-sin((radiationPort.angleDegAziSun + angleDegAzi - 90.0)*Modelica.Constants.pi/180.0) * tan(angleZen)) if OneAxisTracking
     "Tilt angle of the surface"
     annotation (Placement(transformation(extent={{-20,-20},{20,20}},rotation=180,origin={-82,-26}),
       iconTransformation(extent={{-14,-14},{14,14}}, rotation=180,origin={-76,-20})));
+protected
+  BuildingSystems.Interfaces.Angle_degOutput angleDegTil_internal
+    "Tilt angle of the surface";
   Modelica.SIunits.Angle angleZen
     "Zenith angle";
-  Modelica.SIunits.Conversions.NonSIunits.Angle_deg angleDegAziSun
-    (start = 0.0)
-    "Azimuth angle of the sun";
   Real cosAngleAzi
     "Cosinus of the azimuth angle";
   Real cosAngleInc
@@ -73,37 +73,70 @@ partial model SolarRadiationTransformerGeneral
     "Helping variable";
   Real Z
     "Shift factor";
-  Real sinAngleLat = sin(latitudeDeg * Modelica.Constants.pi / 180.0)
+  Real sinAngleLat = sin(latitudeDeg*degRad)
     "Sinus of the latitude";
-  Real cosAngleLat = cos(latitudeDeg * Modelica.Constants.pi / 180.0)
+  Real cosAngleLat = cos(latitudeDeg*degRad)
     "Cosinus of the latitude";
+  Real arg
+    "cos(solAzi) after data validity check";
+  Real tmp
+    "cos(solAzi) before data validity check";
+  Real solAziTem
+    "Temporary variable for solar azimuth";
+  constant Real degRad = Modelica.Constants.pi/180.0
+    "Transformation factor deg to rad";
+  constant Real radDeg = 180.0/Modelica.Constants.pi
+    "Transformation factor rad to deg";
+  constant Modelica.SIunits.Angle polarCircle = 1.1617
+    "Latitude of polar circle (66 degree 33 min 44 sec)";
+  Boolean outsidePolarCircle = latitudeDeg*degRad < polarCircle and latitudeDeg*degRad > -polarCircle
+    "Flag, true if latitude is outside polar region";
 equation
+  tmp = (sinAngleLat * cosAngleZen - Modelica.Math.sin(angleDec))/
+        (cosAngleLat * Modelica.Math.sin(angleZen));
+  arg = min(1.0, max(-1.0, tmp));
+  solAziTem = radDeg * Modelica.Math.acos(arg); // Solar azimuth as a positive number
+  if outsidePolarCircle then
+    // Outside the polar circle, the only non-differentiability is at night when the sun is set.
+    // Hence, we use noEvent.
+    if noEvent(timeSun < 12.0) then
+      radiationPort.angleDegAziSun = -solAziTem;
+    else
+      radiationPort.angleDegAziSun = solAziTem;
+    end if;
+  else
+    // Inside the polar circle, there is a jump at (solar-)midnight when the sun can
+    // be above the horizon. Hence, we do not use noEvent(...)
+    if timeSun < 12.0 then
+      radiationPort.angleDegAziSun = -solAziTem;
+    else
+      radiationPort.angleDegAziSun = solAziTem;
+    end if;
+  end if;
+
   dayOfYear = time / (3600.0 * 24.0) + 0.5;
 
   x = 0.9856 * dayOfYear - 2.72;
 
-  Z = - 7.66 * sin(x * Modelica.Constants.pi / 180.0) - 9.87 * sin((2.0 * x  + 24.99 + 3.83 * sin(x * Modelica.Constants.pi / 180.0)) * Modelica.Constants.pi / 180.0);
+  Z = - 7.66 * sin(x * degRad) - 9.87 * sin((2.0 * x  + 24.99 + 3.83 * sin(x * degRad)) * degRad);
 
-  angleDec = 23.45 * Modelica.Constants.pi / 180.0 * sin((360.0 * (284.0 + dayOfYear) / 365.0) * (Modelica.Constants.pi / 180.0));
+  angleDec = 23.45 * degRad * sin((360.0 * (284.0 + dayOfYear) / 365.0) * (degRad));
 
-  timeSun = time / 3600.0 + Z / 60.0 + 4.0 / 60.0 * (longitudeDeg0 - longitudeDeg + angleDegL);
+  timeSun = mod(time / 3600.0 + Z / 60.0 + 4.0 / 60.0 * (longitudeDeg0 - longitudeDeg + angleDegL),24);
 
-  angleHr = 15.0 * (timeSun - 12.0) * Modelica.Constants.pi / 180.0;
+  angleHr = 15.0 * (timeSun - 12.0) * degRad;
 
   // One axis tracking
   if OneAxisTracking then
     angleDegTil_internal =
-      180.0 / Modelica.Constants.pi * atan(-sin((angleDegAziSun + angleDegAzi - 90.0) * Modelica.Constants.pi/180.0) * tan(angleZen));
+      radDeg * atan(-sin((radiationPort.angleDegAziSun + angleDegAzi - 90.0) * degRad) * tan(angleZen));
   else
     connect(angleDegTil_internal,angleDegTil);
   end if;
 
-  cosAngleZen = BuildingSystems.Utilities.Math.Functions.smoothLimit(cosAngleLat * cos(angleDec) * cos(angleHr)
-    + sinAngleLat * sin(angleDec),0.00001,1.0,0.0001);
+  cosAngleZen = cosAngleLat * cos(angleDec) * cos(angleHr) + sinAngleLat * sin(angleDec);
 
   angleZen = acos(cosAngleZen);
-
-  sin(angleDegAziSun*Modelica.Constants.pi/180.0) = - sin(angleHr) * cos(angleDec) / sin(angleZen);
 
   cosAngleInc = BuildingSystems.Utilities.Math.Functions.smoothLimit(sin(angleDec) * sinAngleLat * cosAngleTil
     - sin(angleDec) * cosAngleLat * sinAngleTil * cosAngleAzi
@@ -111,15 +144,17 @@ equation
     + cos(angleDec) * sinAngleLat * sinAngleTil * cosAngleAzi * cos(angleHr)
     + cos(angleDec) * sinAngleTil * sinAngleAzi * sin(angleHr),0.0,1.0,0.0001);
 
-  radiationPort.angleDegInc = acos(cosAngleInc) * 180.0 / Modelica.Constants.pi;
+  radiationPort.angleDegInc = acos(cosAngleInc) * radDeg;
 
-  sinAngleAzi = sin(angleDegAzi * Modelica.Constants.pi / 180.0);
+  radiationPort.angleDegHeightSun = 90.0 - angleZen * 180.0 / Modelica.Constants.pi;
 
-  cosAngleAzi = cos(angleDegAzi * Modelica.Constants.pi / 180.0);
+  sinAngleAzi = sin(angleDegAzi * degRad);
 
-  sinAngleTil = sin(angleDegTil_internal * Modelica.Constants.pi / 180.0);
+  cosAngleAzi = cos(angleDegAzi * degRad);
 
-  cosAngleTil = cos(angleDegTil_internal * Modelica.Constants.pi / 180.0);
+  sinAngleTil = sin(angleDegTil_internal * degRad);
+
+  cosAngleTil = cos(angleDegTil_internal * degRad);
 
   IrrTotHor = IrrDirHor + IrrDifHor;
 
@@ -140,7 +175,7 @@ equation
     Line(points={{32,8},{52,-12}}, color={255,128,0},thickness=1,smooth=Smooth.None),
     Line(points={{-8,-32},{12,-52}},color={255,128,0},thickness=1,smooth=Smooth.None),
     Line(points={{2,-22},{22,-42}},color={255,128,0},thickness=1,smooth=Smooth.None),
-    Text(extent={{-32,-78},{36,-104}}, lineColor={0,0,255},textString="%name")}),
+    Text(extent={{20,-78},{136,-142}}, lineColor={0,0,255},textString="%name")}),
 Documentation(info="<html>
 <p>
 This model calculates the direct solar radiation on a tilted surface (general model).
@@ -161,6 +196,10 @@ IrrTotTil = IrrDirNor * cosAngleInc
 </p>
 </html>", revisions="<html>
 <ul>
+<li>
+Sep 4, 2019 by Christoph Nytsch-Geusen:<br/>
+Height angle and azimuth angle of the sun to the radiation port added.
+</li>
 <li>
 Sep 9, 2017 by Christoph Nytsch-Geusen:<br/>
 Radiation calculation for one axis tracking added.

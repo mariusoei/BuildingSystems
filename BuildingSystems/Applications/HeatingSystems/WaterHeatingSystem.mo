@@ -4,10 +4,10 @@ model WaterHeatingSystem
   extends Modelica.Icons.Example;
   package Medium = BuildingSystems.Media.Water;
   parameter Modelica.SIunits.MassFlowRate m_flow_nominal= 0.1;
-  BuildingSystems.Buildings.Ambient ambient(
-    nSurfaces=building.nSurfacesAmbient,
+  BuildingSystems.Buildings.Ambience ambience(
+    nSurfaces=building.nSurfacesAmbience,
     redeclare block WeatherData = BuildingSystems.Climate.WeatherDataMeteonorm.Germany_Berlin_Meteonorm_ASCII)
-    "Ambient model"
+    "Ambience model"
     annotation (Placement(transformation(extent={{-26,42},{-6,62}})));
   BuildingSystems.Buildings.BuildingTemplates.Building1Zone1DDistrict building(
     calcIdealLoads=false,
@@ -39,11 +39,11 @@ model WaterHeatingSystem
     redeclare BuildingSystems.Buildings.Data.Constructions.Transparent.DoubleGlazing constructionWindow4,
     redeclare BuildingSystems.Buildings.Data.Constructions.Transparent.DoubleGlazing constructionWindow1,
     redeclare BuildingSystems.Buildings.Data.Constructions.Thermal.RoofRowhouse1918 constructionCeiling,
-    BCWall1=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambient,
-    BCWall2=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambient,
-    BCWall3=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambient,
-    BCWall4=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambient,
-    BCCeiling=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambient)
+    BCWall1=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambience,
+    BCWall2=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambience,
+    BCWall3=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambience,
+    BCWall4=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambience,
+    BCCeiling=BuildingSystems.Buildings.Types.ThermalBoundaryCondition.Ambience)
     "Building model"
     annotation (Placement(transformation(extent={{4,42},{24,62}})));
   Modelica.Blocks.Sources.Constant airchange(
@@ -76,7 +76,7 @@ model WaterHeatingSystem
     energyDynamics=Modelica.Fluid.Types.Dynamics.FixedInitial,
     m_flow_nominal=m_flow_nominal,
     dp_nominal=10.0,
-    Q_flow_nominal=8000.0,
+    Q_flow_nominal=12000.0,
     VWat=0.005,
     mDry=0.0001,
     nEle=5,
@@ -135,7 +135,7 @@ model WaterHeatingSystem
     m_flow_nominal=m_flow_nominal)
     annotation (Placement(transformation(extent={{-84,-22},{-64,-2}})));
   Modelica.Blocks.Sources.Constant dpSet(
-    k=4000.0)
+    k=150000.0)
     "Set pressure for the pump model"
     annotation (Placement(transformation(extent={{-68,6},{-72,10}})));
   Modelica.Blocks.Sources.Constant TAirSet(
@@ -146,19 +146,19 @@ model WaterHeatingSystem
     each T=293.15)
     annotation (Placement(transformation(extent={{-72,-46},{-60,-34}})));
 equation
-   connect(ambient.toSurfacePorts, building.toAmbientSurfacesPorts) annotation (Line(
+   connect(ambience.toSurfacePorts, building.toAmbienceSurfacesPorts) annotation (Line(
     points={{-8,56},{5,56}},
     color={0,255,0},
     smooth=Smooth.None));
-  connect(ambient.toAirPorts, building.toAmbientAirPorts) annotation (Line(
+  connect(ambience.toAirPorts, building.toAmbienceAirPorts) annotation (Line(
     points={{-8,48},{5,48}},
     color={85,170,255},
     smooth=Smooth.None));
-  connect(ambient.TAirRef, building.TAirAmb) annotation (Line(
+  connect(ambience.TAirRef, building.TAirAmb) annotation (Line(
       points={{-24.2,59},{-26,59},{-26,64},{20.2,64},{20.2,61.8}},
       color={0,0,127},
       smooth=Smooth.None));
-  connect(ambient.xAir, building.xAirAmb) annotation (Line(
+  connect(ambience.xAir, building.xAirAmb) annotation (Line(
       points={{-24.2,57},{-28,57},{-28,66},{22.4,66},{22.4,61.8}},
       color={0,0,127},
       smooth=Smooth.None));

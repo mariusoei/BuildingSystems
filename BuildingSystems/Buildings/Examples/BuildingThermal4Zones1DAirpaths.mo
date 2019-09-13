@@ -8,7 +8,7 @@ model BuildingThermal4Zones1DAirpaths
   model Building
     extends BuildingSystems.Buildings.BaseClasses.BuildingTemplate(
     nZones = 4,
-    surfacesToAmbient(nSurfaces=12),
+    surfacesToAmbience(nSurfaces=12),
     convectionOnSurfaces=BuildingSystems.HAM.ConvectiveHeatTransfer.Types.Convection.forced,
     useAirPaths = false);
 
@@ -74,8 +74,9 @@ model BuildingThermal4Zones1DAirpaths
     redeclare Construction1 constructionData,
     height=3.0,
     width=3.0,
-    AInnSur=window2.ASur,
-    angleDegAzi=90.0,angleDegTil=90.0)
+    AInnSur=window2.width*window2.height,
+    angleDegAzi=90.0,
+    angleDegTil=90.0)
     annotation (Placement(transformation(extent={{-50,-30},{-70,-10}})));
   BuildingSystems.Buildings.Constructions.Walls.WallThermal1DNodes wall3(
     redeclare Construction2 constructionData,
@@ -105,15 +106,17 @@ model BuildingThermal4Zones1DAirpaths
     redeclare Construction1 constructionData,
     height=3.0,
     width=3.0,
-    AInnSur=window3.ASur,
-    angleDegAzi=180.0,angleDegTil=90.0)
+    AInnSur=window3.width*window3.height,
+    angleDegAzi=180.0,
+    angleDegTil=90.0)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=90,origin={-52,60})));
   BuildingSystems.Buildings.Constructions.Walls.WallThermal1DNodes wall8(
     redeclare Construction1 constructionData,
     height=3.0,
     width=3.0,
-    AInnSur=window4.ASur,
-    angleDegAzi=180.0,angleDegTil=90.0)
+    AInnSur=window4.width*window4.height,
+    angleDegAzi=180.0,
+    angleDegTil=90.0)
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=90,origin={28,60})));
   BuildingSystems.Buildings.Constructions.Walls.WallThermal1DNodes wall9(
     redeclare Construction2 constructionData,
@@ -129,7 +132,7 @@ model BuildingThermal4Zones1DAirpaths
     redeclare Construction1 constructionData,
     height=3.0,
     width=3.0,
-    AInnSur=window1.ASur,
+    AInnSur=window1.width*window1.height,
     angleDegAzi=0.0,
     angleDegTil=90.0)
     annotation (Placement(transformation(extent={{10,-10},{-10,10}},rotation=90,origin={-52,-42})));
@@ -241,62 +244,62 @@ equation
      color={255,0,0},
      smooth=Smooth.None,
      pattern=LinePattern.Dot));
-  connect(wall1.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[1]) annotation (Line(
+  connect(wall1.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[1]) annotation (Line(
      points={{-62,40},{-76,40},{-76,0},{-170.8,0}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall7.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[2]) annotation (Line(
+  connect(wall7.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[2]) annotation (Line(
      points={{-52,62},{-52,68},{-76,68},{-76,0},{-170.8,0}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(window3.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[3]) annotation (Line(
+  connect(window3.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[3]) annotation (Line(
      points={{-28,62},{-28,68},{-76,68},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall8.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[4]) annotation (Line(
+  connect(wall8.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[4]) annotation (Line(
      points={{28,62},{28,68},{-76,68},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(window4.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[5]) annotation (Line(
+  connect(window4.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[5]) annotation (Line(
      points={{52,62},{52,68},{-76,68},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall5.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[6]) annotation (Line(
+  connect(wall5.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[6]) annotation (Line(
      points={{62,40},{70,40},{70,78},{-76,78},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall2.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[7]) annotation (Line(
+  connect(wall2.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[7]) annotation (Line(
      points={{-62,-20},{-76,-20},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall11.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[8]) annotation (Line(
+  connect(wall11.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[8]) annotation (Line(
      points={{-52,-44},{-52,-50},{-76,-50},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(window1.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[9]) annotation (Line(
+  connect(window1.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[9]) annotation (Line(
      points={{-28,-44},{-28,-50},{-76,-50},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall12.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[10]) annotation (Line(
+  connect(wall12.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[10]) annotation (Line(
      points={{28,-42},{28,-50},{-76,-50},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(window2.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[11]) annotation (Line(
+  connect(window2.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[11]) annotation (Line(
      points={{52,-42},{52,-50},{-76,-50},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
      smooth=Smooth.None));
-  connect(wall6.toSurfacePort_2, surfacesToAmbient.toConstructionPorts[12]) annotation (Line(
+  connect(wall6.toSurfacePort_2, surfacesToAmbience.toConstructionPorts[12]) annotation (Line(
      points={{62,-20},{70,-20},{70,-50},{-76,-50},{-76,3.55271e-15},{-170.8,3.55271e-15}},
      color={0,0,0},
      pattern=LinePattern.Solid,
@@ -417,8 +420,8 @@ equation
           {10,4},{10,-10},{31,-10},{31,-9}}, color={0,127,255}));
   end Building;
 
-  BuildingSystems.Buildings.Ambient ambient(
-    nSurfaces=building.nSurfacesAmbient,
+  BuildingSystems.Buildings.Ambience ambience(
+    nSurfaces=building.nSurfacesAmbience,
     redeclare block WeatherData = BuildingSystems.Climate.WeatherDataMeteonorm.USA_SanFrancisco_Meteonorm_ASCII)
     annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
   Building building(
@@ -450,11 +453,11 @@ equation
     k=273.15 + 25.5)
     annotation (Placement(transformation(extent={{-2,-2},{2,2}},rotation=180,origin={36,-14})));
 equation
-   connect(ambient.toSurfacePorts, building.toAmbientSurfacesPorts) annotation (Line(
+   connect(ambience.toSurfacePorts, building.toAmbienceSurfacesPorts) annotation (Line(
     points={{-22,4},{-20,4},{-20,8},{-20,11.3333},{-20,4},{-9,4}},
     color={0,255,0},
     smooth=Smooth.None));
-  connect(ambient.toAirPorts, building.toAmbientAirPorts) annotation (Line(
+  connect(ambience.toAirPorts, building.toAmbienceAirPorts) annotation (Line(
     points={{-22,-4},{-16,-4},{-16,-4},{-9,-4}},
     color={85,170,255},
     smooth=Smooth.None));

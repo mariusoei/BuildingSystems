@@ -57,7 +57,7 @@ partial model Heater "Base class for example model for the heater and cooler"
   Modelica.Blocks.Sources.Constant mFan_flow(k=m_flow_nominal)
     "Mass flow rate of the fan"
     annotation (Placement(transformation(extent={{-90,-20},{-70,0}})));
-  Sources.FixedBoundary bou(
+  BuildingSystems.Fluid.Sources.Boundary_pT bou(
     redeclare package Medium = Medium,
     nPorts=1)
     "Fixed pressure boundary condition, required to set a reference pressure"
@@ -120,7 +120,7 @@ BuildingSystems.Fluid.HeatExchangers.Examples.WaterHeater_T</a>
 and
 <a href=\"modelica://BuildingSystems.Fluid.HeatExchangers.Examples.WaterHeater_u\">
 BuildingSystems.Fluid.HeatExchangers.Examples.WaterHeater_u</a>.
-It consists of a volume with heat loss to the ambient,
+It consists of a volume with heat loss to the ambience,
 a fan,
 a set point for the temperature of the volume and a PI controller.
 </p>
@@ -131,6 +131,11 @@ and it also is required to account for a variation of density of the fluid.
 </p>
 </html>", revisions="<html>
 <ul>
+<li>
+May 15, 2019, by Jianjun Hu:<br/>
+Replaced fluid source. This is for 
+<a href=\"https://github.com/ibpsa/modelica-ibpsa/issues/1072\"> #1072</a>.
+</li>
 <li>
 May 8, 2017, by Michael Wetter:<br/>
 Updated model for new heater model.<br/>

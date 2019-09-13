@@ -43,7 +43,7 @@ the mass flow rate is set to <i>1.245</i> kg/s.</p>
 
 <h4>Test bench schematic</h4>
 <p><img alt=\"Schematic of test rig at ULg\"
-src=\"modelica://BuildingSystems/Resources/Images/Experimental/ULgTestBench.png\" border=\"1\"/></p>
+src=\"modelica://BuildingSystems/Resources/Images/Fluid/FixedResistances/Validation/PlugFlowPipes/ULgTestBench.png\" border=\"1\"/></p>
 <p>Notice: length are approximate</p>
 
 <h4>Pipe characteristics</h4>
@@ -57,7 +57,7 @@ src=\"modelica://BuildingSystems/Resources/Images/Experimental/ULgTestBench.png\
 <li>Initial temperature of the pipe is considered equal
 to the initial temperature of the water (cooling before test)
 </li>
-<li>Heat transfer coefficient between the pipe and the ambient is assumed
+<li>Heat transfer coefficient between the pipe and the ambience is assumed
 at 5 W/m<sup>2</sup>K (from internal model) due to insulation.
 The pipe is insulated by Tubolit 60/13 (13mm of thickness) whose
 nominal thermal coefficient is inferior 0.04.

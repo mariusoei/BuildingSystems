@@ -1,9 +1,9 @@
-simulateModel("BuildingSystems.Applications.DistrictSimulation.DistrictBerlinKreuzberg", stopTime=864000, method="dassl", tolerance = 1e-5, resultFile="DistrictBerlinKreuzberg");
+simulateModel("BuildingSystems.Applications.DistrictSimulation.DistrictBerlinKreuzberg", stopTime=864000, method="dassl", resultFile="DistrictBerlinKreuzberg");
 removePlots();
 createPlot(
   id = 1,
   position = {0, 0, 700, 500},
-  y = {"ambient.TAirRef","building122.zone.TAir"},
+  y = {"ambience.TAirRef","building122.zone.TAir"},
   autoscale = true,
   autoerase = true,
   autoreplot = true,

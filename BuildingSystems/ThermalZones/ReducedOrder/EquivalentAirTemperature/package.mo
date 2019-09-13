@@ -19,7 +19,7 @@ follow the second approach. This approach is, for example, described in the Germ
 Guideline VDI 6007 Part 1 (VDI, 2012). The influence of indoor temperatures
 via heat transfer through exterior walls is neglected. The exterior wall&apos;s
 outdoor surface is assumed to have the outdoor air temperature for calculation
-of radiative heat exchange with the ambient.</p>
+of radiative heat exchange with the ambience.</p>
 <p>The fundamental equation is: </p>
 <p align=\"center\" style=\"font-style:italic;\">
 T<sub>EqAirExt</sub> = T
@@ -88,7 +88,8 @@ rooms.</p>
 Modelling long-wave radiation heat exchange for thermal network building
 simulations at urban scale using Modelica. <i>Proceedings of the 10th
 International Modelica Conference</i>, p. 125-133, Lund, Sweden. Mar. 10-12,
-2014. <a href=\"http://dx.doi.org/10.3384/ECP14096125\">doi:10.3384/ECP14096125</a></p>
+2014. <a href=\"http://www.ep.liu.se/ecp/096/013/ecp14096013.pdf\">
+http://www.ep.liu.se/ecp/096/013/ecp14096013.pdf</a></p>
 </html>"));
 end UsersGuide;
 
