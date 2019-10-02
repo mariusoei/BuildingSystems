@@ -1,10 +1,12 @@
 AirElementGeneral
 AirvolumeGeneral
+BuildingElement
 BuildingTemplate
 ConstructionGeneral
 HeatConduction3DWithTube
 RadiationDistribution
 RelationRadiationConvection
+ShadowingElementGeneral
 SurfaceGeneral
 WallGeneral
 WallHygroThermalGeneral
