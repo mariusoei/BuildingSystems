@@ -46,8 +46,8 @@ model WallThermal1DNodesVariable
       iconTransformation(extent={{10,-40},{30,-20}})));
 
   BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodesVariable construction(
-    lengthY=width,
-    lengthZ=height,
+    lengthY=width_internal,
+    lengthZ=height_internal,
     nLayers=constructionData.nLayers,
     nNodes=nNodes,
     thickness=thickness,
@@ -83,6 +83,16 @@ model WallThermal1DNodesVariable
     "Temperature on surface side 2"
     annotation (Placement(transformation(extent={{-10,-10},{10,10}},origin={50,20}),
       iconTransformation(extent={{20,10},{40,30}})));
+  parameter Modelica.SIunits.Area AInnSur = 0.0
+    "Area of all enclosed surfaces (if geometryType == Fixed)"
+    annotation(Dialog(tab = "General", group = "Geometry"));
+  output BuildingSystems.Interfaces.AreaOutput AInnSur_internal
+    "Area of all enclosed surfaces";
+  input BuildingSystems.Interfaces.AreaInput AInnSur_in(
+    min=0) if geometryType == BuildingSystems.Buildings.Types.GeometryType.Flexible
+    "Area of all enclosed surfaces from input"
+    annotation (Placement(transformation(extent={{-10,-10},{10,10}},rotation=0,  origin={-30,-56}),
+          iconTransformation(extent={{10,-10},{-10,10}},rotation=180,origin={-20,-60})));
 
   Modelica.Blocks.Interfaces.RealInput conductionMultiplier if hasVariableConduction
     annotation (Placement(transformation(extent={{-40,-104},{-20,-84}}),
@@ -109,10 +119,8 @@ model WallThermal1DNodesVariable
   parameter Modelica.SIunits.Thickness thickness[constructionData.nLayers](each fixed=false)
     "Thickness of the construction layers";
 
-
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(
-                       C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1, T(start=
-          T_start[1], fixed=true)) if
+    T(start=T_start[1]), C=rho_surface_1*(width*height-AInnSur)*thickness_surface_1*specHeatCapacity_surface_1) if
     surfaceHasMass_1
     annotation (Placement(transformation(extent={{-22,58},{-2,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_1(m=2) if
@@ -121,8 +129,7 @@ model WallThermal1DNodesVariable
         rotation=180,
         origin={-12,42})));
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(
-                         C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2, T(start=
-          T_start[end], fixed=true)) if
+    T(start=T_start[end]), C=rho_surface_2*(width*height-AInnSur)*thickness_surface_2*specHeatCapacity_surface_2) if
     surfaceHasMass_2
     annotation (Placement(transformation(extent={{4,58},{24,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_2(m=2) if
@@ -136,6 +143,7 @@ protected
   Modelica.Blocks.Interfaces.RealInput abs_1_internal;
   Modelica.Blocks.Interfaces.RealInput abs_2_internal;
 
+protected
   parameter Modelica.SIunits.SpecificHeatCapacity specHeatCapacity_surface_1 = constructionData.material[1].c
     "Heat capacity of surface if surfaceHasMass_1"
     annotation(Dialog(tab = "Advanced", group = "Surface variables"));
@@ -163,6 +171,13 @@ initial algorithm
   end if;
 
 equation
+  // Geometry
+  ASur = height_internal * width_internal - AInnSur_internal;
+  if geometryType == BuildingSystems.Buildings.Types.GeometryType.Fixed then
+    AInnSur_internal = AInnSur;
+  else
+    connect(AInnSur_internal, AInnSur_in);
+  end if;
 
   // Connect emissivity either to input or to parameter, depending on boolean
   if hasVariableEmissivity_1 then
@@ -189,7 +204,7 @@ equation
   else
     abs_2_internal = abs_2;
   end if;
-
+  // Energy and moisture transport
   connect(heatPort_source, construction.heatPort_source);
   connect(toSurfacePort_1.moisturePort, moistBcPort1.moisturePort) annotation (Line(
     points={{-20,0},{-20,-11.2}},
@@ -232,10 +247,12 @@ equation
       smooth=Smooth.None));
   end if;
 
-  connect(thermalCollector_1.port_b,thermalMass_surface_1. port)
+  connect(thermalCollector_1.port_b, thermalMass_surface_1.port)
     annotation (Line(points={{-12,52},{-12,58}}, color={191,0,0}));
+
   connect(thermalCollector_2.port_b,thermalMass_surface_2. port)
     annotation (Line(points={{14,52},{14,58}},   color={191,0,0}));
+
   annotation (defaultComponentName="wall", Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,100}}),graphics={
     Text(extent={{-16,81},{16,38}}, lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
             fillPattern =                                                                                     FillPattern.Solid,textString = "1D"),
@@ -247,6 +264,10 @@ This is a thermal wall model with 1D discritisation of the single layers.
 </p>
 </html>", revisions="<html>
 <ul>
+<li>
+April 24, 2019 by Christoph Nytsch-Geusen:<br/>
+Adaptation to flexible geometries.
+</li>
 <li>
 May 23, 2015 by Christoph Nytsch-Geusen:<br/>
 First implementation.

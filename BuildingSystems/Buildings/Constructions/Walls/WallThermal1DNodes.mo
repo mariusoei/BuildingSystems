@@ -63,7 +63,7 @@ model WallThermal1DNodes
     "Thickness of the construction layers";
 
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_1(
-    T(start=T_start[1]), C=rho_surface_1*ASur*thickness_surface_1*specHeatCapacity_surface_1) if
+    T(start=T_start[1]), C=rho_surface_1*(width*height-AInnSur)*thickness_surface_1*specHeatCapacity_surface_1) if
     surfaceHasMass_1
     annotation (Placement(transformation(extent={{-22,58},{-2,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_1(m=2) if
@@ -72,7 +72,7 @@ model WallThermal1DNodes
         rotation=180,
         origin={-12,42})));
   Modelica.Thermal.HeatTransfer.Components.HeatCapacitor thermalMass_surface_2(
-    T(start=T_start[end]), C=rho_surface_2*ASur*thickness_surface_2*specHeatCapacity_surface_2) if
+    T(start=T_start[end]), C=rho_surface_2*(width*height-AInnSur)*thickness_surface_2*specHeatCapacity_surface_2) if
     surfaceHasMass_2
     annotation (Placement(transformation(extent={{4,58},{24,78}})));
   Modelica.Thermal.HeatTransfer.Components.ThermalCollector thermalCollector_2(m=2) if

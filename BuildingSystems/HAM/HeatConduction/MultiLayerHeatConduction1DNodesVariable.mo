@@ -37,9 +37,9 @@ model MultiLayerHeatConduction1DNodesVariable
   parameter Integer layerWithVariableConduction = 1
     "Material layer with variable heat conduction";
 
-  parameter Modelica.SIunits.Length lengthY = 1.0
+  Modelica.SIunits.Length lengthY = 1.0
     "Length in y dimension";
-  parameter Modelica.SIunits.Length lengthZ = 1.0
+  Modelica.SIunits.Length lengthZ = 1.0
     "Length in z dimension";
   parameter Integer nLayers = 1
     "Number of material layers in the x dimension";
@@ -78,23 +78,13 @@ equation
   end for;
 
   annotation(defaultComponentName = "layeredEle",Icon(graphics={
-    Rectangle(extent={{-80,80},{-40,-80}},lineColor={255,170,85},fillColor={255,170,85},
-            fillPattern =                                                                           FillPattern.Solid),
-    Rectangle(extent={{0,80},{40,-80}},lineColor={255,170,85},fillColor={255,170,85},
-            fillPattern =                                                                        FillPattern.Solid),
-    Rectangle(extent={{-40,80},{0,-80}},lineColor={255,85,85},fillColor={255,0,0},
-            fillPattern =                                                                     FillPattern.Solid),
-    Rectangle(extent={{40,80},{80,-80}},lineColor={255,85,85},fillColor={255,0,0},
-            fillPattern =                                                                     FillPattern.Solid),
-    Text(extent={{-14,71},{54,5}},lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},
-            fillPattern =                                                                                 FillPattern.Solid,textString
-            =                                                                                                                          "D"),
-    Text(extent={{-52,71},{16,5}},lineColor={255,128,0},lineThickness=0.5,fillColor={255,128,0},
-            fillPattern =                                                                                   FillPattern.Solid,textString
-            =                                                                                                                            "1"),
-    Text(extent={{-46,-78},{46,-106}},lineColor={0,0,255},fillColor={230,230,230},
-            fillPattern =                                                                       FillPattern.Solid,textString
-            =                                                                                                                "%name")}),
+    Rectangle(extent={{-80,80},{-40,-80}},lineColor={255,170,85},fillColor={255,170,85},fillPattern=FillPattern.Solid),
+    Rectangle(extent={{0,80},{40,-80}},lineColor={255,170,85},fillColor={255,170,85},fillPattern=FillPattern.Solid),
+    Rectangle(extent={{-40,80},{0,-80}},lineColor={255,85,85},fillColor={255,0,0},fillPattern=FillPattern.Solid),
+    Rectangle(extent={{40,80},{80,-80}},lineColor={255,85,85},fillColor={255,0,0},fillPattern=FillPattern.Solid),
+    Text(extent={{-14,71},{54,5}},lineColor={255,0,0},lineThickness=0.5,fillColor={255,128,0},fillPattern=FillPattern.Solid,textString="D"),
+    Text(extent={{-52,71},{16,5}},lineColor={255,128,0},lineThickness=0.5,fillColor={255,128,0},fillPattern=FillPattern.Solid,textString="1"),
+    Text(extent={{-46,-78},{46,-106}},lineColor={0,0,255},fillColor={230,230,230},fillPattern=  FillPattern.Solid,textString="%name")}),
 Documentation(info="<html>
 <p>
 This model describes the one-dimensional heat conduction of a
@@ -103,6 +93,10 @@ layer can have a different <code>thickness</code> and an edge length <code>dy</c
 </p>
 </html>", revisions="<html>
 <ul>
+<li>
+April 24, 2019 by Christoph Nytsch-Geusen:<br/>
+Adaptation to flexible geometries.
+</li>
 <li>
 May 23, 2016 by Christoph Nytsch-Geusen:<br/>
 First implementation.
