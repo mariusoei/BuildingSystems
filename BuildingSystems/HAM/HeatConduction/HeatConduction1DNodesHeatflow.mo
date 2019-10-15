@@ -27,11 +27,11 @@ model HeatConduction1DNodesHeatflow
   parameter Boolean hasVariableHeatflow = false
     "Expose temperature output and deltaT input if true";
 
-  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodesX](each start = T_start) if hasVariableHeatflow
+  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodesX] = T
     "Temperature outputs"
     annotation (Placement(transformation(extent={{76,-54},{100,-30}})));
 
-  BuildingSystems.Interfaces.Temp_KInput dT_in[nNodesX + 1](each start=0) if hasVariableHeatflow
+  BuildingSystems.Interfaces.Temp_KInput dT_in[nNodesX + 1](each start=0)
     "Virtual temperature difference inputs of the nodes used for heat flow calculation"
     annotation (Placement(transformation(extent={{-98,-56},{-74,-32}})));
 
@@ -68,7 +68,6 @@ equation
   if hasVariableHeatflow then
     // Use deltaT from input connector
     connect(dT_in, dT_internal);
-    T_out = T;
   else
     // Calculate deltaT from internal temperature state
     dT_internal[1] = T[1] - heatPort_x1.T;
