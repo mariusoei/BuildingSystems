@@ -4,13 +4,17 @@ model WallThermal1DNodesHeatflow
       BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodesHeatflow
       construction(layerWithVariableHeatflows=layerWithVariableHeatflows));
 
-  Interfaces.Temp_KOutput T_out[nNodesX](each start = T_start)
+  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodesX](each start = T_start)
     "Temperature outputs"
-    annotation (Placement(transformation(extent={{76,-54},{100,-30}})));
+    annotation (Placement(transformation(extent={{-12,-12},{12,12}},
+        rotation=270,
+        origin={18,-82})));
 
-  Interfaces.Temp_KInput dT_in[layer[layerWithVariableHeatflows].nNodesX + 1](each start=0)
+  BuildingSystems.Interfaces.Temp_KInput dT_in[layer[layerWithVariableHeatflows].nNodesX + 1](each start=0)
     "Virtual temperature difference inputs of the nodes used for heat flow calculation"
-    annotation (Placement(transformation(extent={{-98,-56},{-74,-32}})));
+    annotation (Placement(transformation(extent={{-12,-12},{12,12}},
+        rotation=90,
+        origin={-10,-82})));
 
   parameter Integer layerWithVariableHeatflows = 1
     "The layer number which exposes its temperature output and deltaT inputs";
