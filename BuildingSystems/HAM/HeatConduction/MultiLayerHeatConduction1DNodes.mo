@@ -2,7 +2,7 @@ within BuildingSystems.HAM.HeatConduction;
 model MultiLayerHeatConduction1DNodes
   "Multi layered-body with 1D heat conduction and a potential inner discretization of each layer"
 
-  BuildingSystems.HAM.HeatConduction.HeatConduction1DNodes layer[nLayers](
+  replaceable BuildingSystems.HAM.HeatConduction.HeatConduction1DNodes layer[nLayers](
     material=material,
     each lengthY=lengthY,
     each lengthZ=lengthZ,

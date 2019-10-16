@@ -5,7 +5,7 @@ model WallThermal1DNodes
   BuildingSystems.Interfaces.HeatPort heatPort_source if heatSource
     annotation (Placement(transformation(extent={{-10,-48},{10,-28}}),
        iconTransformation(extent={{-10,-48},{10,-28}})));
-  BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodes construction(
+  replaceable BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodes construction(
     lengthY=width_internal,
     lengthZ=height_internal,
     nLayers=constructionData.nLayers,
