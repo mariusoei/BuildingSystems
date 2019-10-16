@@ -4,9 +4,10 @@ model WallThermal1DNodesHeatflow
       BuildingSystems.HAM.HeatConduction.MultiLayerHeatConduction1DNodesHeatflow
       construction(layerWithVariableHeatflows=layerWithVariableHeatflows));
 
-  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodes[layerWithVariableHeatflows]]
-    "Temperature outputs"
-    annotation (Placement(transformation(extent={{-12,-12},{12,12}},
+  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodes[
+    layerWithVariableHeatflows] + 2] "Temperature outputs" annotation (
+      Placement(transformation(
+        extent={{-12,-12},{12,12}},
         rotation=270,
         origin={18,-82})));
 

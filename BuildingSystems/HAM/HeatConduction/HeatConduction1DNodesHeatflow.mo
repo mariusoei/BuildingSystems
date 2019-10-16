@@ -27,8 +27,8 @@ model HeatConduction1DNodesHeatflow
   parameter Boolean hasVariableHeatflow = false
     "Expose temperature output and deltaT input if true";
 
-  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodesX] = T
-    "Temperature outputs"
+  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodesX + 2]
+    "Temperature outputs (node and layer surface temperatures)"
     annotation (Placement(transformation(extent={{76,-54},{100,-30}})));
 
   BuildingSystems.Interfaces.Temp_KInput dT_in[nNodesX + 1](each start=0)
@@ -76,6 +76,10 @@ equation
       dT_internal[i] = T[i] - T[i-1];
     end for;
   end if;
+
+  T_out[1] = heatPort_x1.T;
+  T_out[end] = heatPort_x2.T;
+  T_out[2:end-1] = T;
 
   heatPort_source[1].T = T[1];
   // Heat flux side 1

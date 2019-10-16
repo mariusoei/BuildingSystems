@@ -4,8 +4,8 @@ model MultiLayerHeatConduction1DNodesHeatflow
   extends MultiLayerHeatConduction1DNodes(
     redeclare HeatConduction1DNodesHeatflow layer(hasVariableHeatflow={if i==layerWithVariableHeatflows then true else false for i in 1:nLayers}));
 
-  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodes[layerWithVariableHeatflows]]
-    "Temperature outputs"
+  BuildingSystems.Interfaces.Temp_KOutput T_out[nNodes[
+    layerWithVariableHeatflows] + 2] "Temperature outputs"
     annotation (Placement(transformation(extent={{76,-54},{100,-30}})));
 
   BuildingSystems.Interfaces.Temp_KInput dT_in[nNodes[layerWithVariableHeatflows] + 1](each start=0)
