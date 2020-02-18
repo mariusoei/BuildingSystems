@@ -25,30 +25,13 @@ model HeatConduction1DNodes
     "Temperature of the numerical node";
     
 protected
-  parameter Modelica.SIunits.Length dx[nNodesX](
-    each fixed = false)
+  parameter Modelica.SIunits.Length dx = lengthX/nNodesX
     "Thickness of the discretized numerical layer";
-  parameter Modelica.SIunits.ThermalConductance CTh[nNodesX+1](
-    each fixed=false)
+  Modelica.SIunits.ThermalConductance CTh_dx = material.lambda / dx * lengthY * lengthZ;
+  Modelica.SIunits.ThermalConductance CTh[nNodesX+1]=CTh_dx*cat(1, {2}, fill(1,nNodesX-1), {2})
     "Thermal conductance of the numerical node";
-  parameter Modelica.SIunits.HeatCapacity C[nNodesX](
-    each fixed = false)
+  Modelica.SIunits.HeatCapacity C[nNodesX] = fill(material.c * material.rho * dx * lengthY * lengthZ,nNodesX)
     "Heat capacity of the numerical node";
-
-initial algorithm
-  for i in 1:nNodesX loop
-    dx[i]:= lengthX / nNodesX;
-    C[i]:= material.c * material.rho * dx[i] * lengthY * lengthZ;
-  end for;
-  for i in 1:nNodesX+1 loop
-    if i == 1 then
-      CTh[1] := 2.0 * material.lambda / dx[1] * lengthY * lengthZ;
-    elseif i > 1 and i < nNodesX+1 then
-      CTh[i] := material.lambda / dx[i]  * lengthY * lengthZ;
-    else
-      CTh[i] := 2.0 * material.lambda / dx[i-1]  * lengthY * lengthZ;
-    end if;
-  end for;
 
 equation
   heatPort_source[1].T = T[1];
